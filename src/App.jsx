@@ -2,6 +2,14 @@ import { useEffect, useState } from 'react'
 import api from './api'
 import './App.css'
 
+// The backend stores text HTML-escaped (e.g. & becomes &amp;); show it as typed
+const decode = (t) => {
+  const el = document.createElement('textarea')
+  el.innerHTML = t ?? ''
+  return el.value
+}
+const clean = (p) => ({ ...p, product_name: decode(p.product_name), description: decode(p.description) })
+
 const emptyForm = { product_name: '', description: '', price: '', quantity: '' }
 
 export default function App() {
@@ -11,7 +19,15 @@ export default function App() {
   const [form, setForm] = useState(emptyForm)
   const [editId, setEditId] = useState(null)
   const [error, setError] = useState('')
+  const [latest, setLatest] = useState([])
   const [username, setUsername] = useState(localStorage.getItem('username') || '')
+
+  useEffect(() => {
+    if (token) return
+    api.get('/latest-products')
+      .then((r) => setLatest((r.data.data || []).map(clean)))
+      .catch(() => {})
+  }, [token])
 
   useEffect(() => { document.title = 'Kent\u2019s Product Manager' }, [])
 
@@ -20,7 +36,7 @@ export default function App() {
   const load = async () => {
     try {
       const res = await api.get('/products')
-      setProducts(res.data.data || [])
+      setProducts((res.data.data || []).map(clean))
     } catch (e) {
       setError(msg(e))
       if (e.response?.status === 401) clearSession()
@@ -90,11 +106,13 @@ export default function App() {
         <section className="shelf" aria-hidden="true">
           <h2>Every item, counted.</h2>
           <p>Prices, stock and descriptions for your whole shelf.</p>
-          <div className="tags">
-            <div className="tag"><span>Bombilya</span><b>50</b></div>
-            <div className="tag"><span>Notebook</span><b>120</b></div>
-            <div className="tag"><span>ID Lace</span><b>1000</b></div>
-          </div>
+          {latest.length > 0 && (
+            <div className="tags">
+              {latest.map((p) => (
+                <div className="tag" key={p.id}><span>{p.product_name}</span><b>{p.quantity}</b></div>
+              ))}
+            </div>
+          )}
         </section>
 
         <div className="panel login-card">

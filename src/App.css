@@ -29,7 +29,7 @@ h2 { font-size: 1.6rem; margin-bottom: 20px; }
 .shelf p { max-width: 30ch; margin: 16px 0 0; color: var(--muted); }
 .tags { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
 .tag { min-width: 120px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
-.tag span { display: block; color: var(--muted); font-size: 0.85rem; }
+.tag span { display: block; max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: 0.85rem; }
 .tag b { display: block; font-size: 1.6rem; font-weight: 700; }
 .login-card { align-self: center; justify-self: center; width: min(380px, calc(100% - 40px)); margin: 20px; padding: 36px; }
 .login-card h1 { font-size: 1.5rem; }
