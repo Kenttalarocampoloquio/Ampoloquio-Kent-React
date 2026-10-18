@@ -91,9 +91,9 @@ export default function App() {
           <h2>Every item, counted.</h2>
           <p>Prices, stock and descriptions for your whole shelf.</p>
           <div className="tags">
-            <div className="tag t1"><b>Bombilya</b><span className="qty">50</span><small>&#8369;85.00 each</small></div>
-            <div className="tag t2"><b>Notebook</b><span className="qty">120</span><small>&#8369;45.00 each</small></div>
-            <div className="tag t3"><b>ID Lace</b><span className="qty">1000</span><small>&#8369;15.00 each</small></div>
+            <div className="tag"><span>Bombilya</span><b>50</b></div>
+            <div className="tag"><span>Notebook</span><b>120</b></div>
+            <div className="tag"><span>ID Lace</span><b>1000</b></div>
           </div>
         </section>
 
