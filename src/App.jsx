@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import api from './api'
 import './App.css'
 
-const API = 'https://ampoloquio-kent.onrender.com/api'
 const emptyForm = { product_name: '', description: '', price: '', quantity: '' }
 
 export default function App() {
@@ -13,23 +12,23 @@ export default function App() {
   const [editId, setEditId] = useState(null)
   const [error, setError] = useState('')
 
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
   const msg = (e) => e.response?.data?.message || e.response?.data?.error || e.message
 
   const load = async () => {
     try {
-      const res = await axios.get(`${API}/products`, auth)
+      const res = await api.get('/products')
       setProducts(res.data.data || [])
     } catch (e) {
       setError(msg(e))
-      if (e.response?.status === 401) logoutLocal()
+      if (e.response?.status === 401) clearSession()
     }
   }
 
   useEffect(() => { if (token) load() }, [token])
 
-  const logoutLocal = () => {
+  const clearSession = () => {
     localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
     setToken(null)
     setProducts([])
   }
@@ -38,24 +37,27 @@ export default function App() {
     e.preventDefault()
     setError('')
     try {
-      const res = await axios.post(`${API}/login`, creds)
-      const t = res.data.tokens.access_token
-      localStorage.setItem('access_token', t)
-      setToken(t)
+      const res = await api.post('/login', creds)
+      const { access_token, refresh_token } = res.data.tokens
+      localStorage.setItem('access_token', access_token)
+      localStorage.setItem('refresh_token', refresh_token)
+      setToken(access_token)
     } catch (e) { setError(msg(e)) }
   }
 
   const logout = async () => {
-    try { await axios.post(`${API}/logout`, {}, auth) } catch { /* ignore */ }
-    logoutLocal()
+    try {
+      await api.post('/logout', { refresh_token: localStorage.getItem('refresh_token') })
+    } catch { /* ignore */ }
+    clearSession()
   }
 
   const save = async (e) => {
     e.preventDefault()
     setError('')
     try {
-      if (editId) await axios.put(`${API}/products/${editId}`, form, auth)
-      else await axios.post(`${API}/products`, form, auth)
+      if (editId) await api.put(`/products/${editId}`, form)
+      else await api.post('/products', form)
       setForm(emptyForm)
       setEditId(null)
       load()
@@ -69,7 +71,7 @@ export default function App() {
 
   const remove = async (id) => {
     if (!confirm('Delete this product?')) return
-    try { await axios.delete(`${API}/products/${id}`, auth); load() }
+    try { await api.delete(`/products/${id}`); load() }
     catch (e) { setError(msg(e)) }
   }
 
