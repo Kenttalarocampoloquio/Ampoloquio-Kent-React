@@ -87,6 +87,16 @@ export default function App() {
   if (!token) {
     return (
       <div className="login">
+        <section className="shelf" aria-hidden="true">
+          <h2>Every item, counted.</h2>
+          <p>Prices, stock and descriptions for your whole shelf.</p>
+          <div className="tags">
+            <div className="tag t1"><b>Bombilya</b><span className="qty">50</span><small>&#8369;85.00 each</small></div>
+            <div className="tag t2"><b>Notebook</b><span className="qty">120</span><small>&#8369;45.00 each</small></div>
+            <div className="tag t3"><b>ID Lace</b><span className="qty">1000</span><small>&#8369;15.00 each</small></div>
+          </div>
+        </section>
+
         <div className="panel login-card">
           <h1>Kent&rsquo;s Product Manager</h1>
           <p className="sub">Sign in to manage your products</p>

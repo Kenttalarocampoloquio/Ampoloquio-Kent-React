@@ -23,8 +23,22 @@ h2 { font-size: 1.6rem; margin-bottom: 20px; }
 .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
 
 /* Login */
-.login { min-height: 100vh; display: grid; place-items: center; padding: 20px; }
-.login-card { width: min(380px, 100%); padding: 36px; }
+.login { min-height: 100vh; display: grid; grid-template-columns: 1.15fr 1fr; }
+.shelf { display: flex; flex-direction: column; justify-content: center; padding: 64px; border-right: 1px solid var(--line); overflow: hidden;
+  background: radial-gradient(circle at 20% 12%, rgba(247, 127, 0, 0.22), transparent 55%), var(--bar); }
+.shelf h2 { max-width: 11ch; margin: 0; font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1; letter-spacing: -0.03em; }
+.shelf p { max-width: 30ch; margin: 16px 0 0; color: var(--muted); }
+.tags { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 44px; }
+.tag { position: relative; width: 150px; padding: 30px 16px 16px; border: 1px solid var(--line); border-top: 4px solid var(--orange); border-radius: 10px; background: var(--panel); animation: hang 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.tag::before { content: ''; position: absolute; top: 10px; left: 50%; width: 10px; height: 10px; margin-left: -5px; border: 1px solid var(--line); border-radius: 50%; background: var(--bg); }
+.tag b { display: block; }
+.tag .qty { display: block; margin: 6px 0 2px; color: var(--orange); font-size: 2.4rem; font-weight: 700; line-height: 1; }
+.tag small { color: var(--muted); }
+.t1 { transform: rotate(-4deg); }
+.t2 { transform: rotate(3deg); margin-top: 18px; animation-delay: 0.12s; }
+.t3 { transform: rotate(-2deg); animation-delay: 0.24s; }
+@keyframes hang { from { opacity: 0; transform: translateY(-24px) rotate(0deg); } }
+.login-card { align-self: center; justify-self: center; width: min(380px, calc(100% - 40px)); margin: 20px; padding: 36px; }
 .login-card h1 { font-size: 1.5rem; }
 .sub { margin: 6px 0 0; color: var(--muted); font-size: 0.95rem; }
 .login-card form { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
@@ -70,3 +84,10 @@ td.empty { padding: 36px 16px; color: var(--muted); text-align: center; }
 .login-card .error { margin: 16px 0 0; }
 
 @media (max-width: 600px) { .topbar { padding: 14px 16px; flex-wrap: wrap; } }
+
+@media (max-width: 860px) {
+  .login { grid-template-columns: 1fr; }
+  .shelf { padding: 40px 24px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .tags { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .tag { animation: none; } }
