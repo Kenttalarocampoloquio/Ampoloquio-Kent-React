@@ -79,56 +79,68 @@ export default function App() {
 
   if (!token) {
     return (
-      <div className="card narrow">
-        <h1>Login</h1>
-        <form onSubmit={login}>
-          <input placeholder="Username" value={creds.username}
-            onChange={(e) => setCreds({ ...creds, username: e.target.value })} required />
-          <input type="password" placeholder="Password" value={creds.password}
-            onChange={(e) => setCreds({ ...creds, password: e.target.value })} required />
-          <button>Login</button>
-        </form>
-        {error && <p className="error">{error}</p>}
+      <div className="login">
+        <aside className="login-hero">
+          <h2>Know what is on your shelf.</h2>
+          <p>Add, edit and track every product in one place.</p>
+        </aside>
+        <div className="card">
+          <h1>Welcome back</h1>
+          <form onSubmit={login}>
+            <input placeholder="Username" value={creds.username}
+              onChange={(e) => setCreds({ ...creds, username: e.target.value })} required />
+            <input type="password" placeholder="Password" value={creds.password}
+              onChange={(e) => setCreds({ ...creds, password: e.target.value })} required />
+            <button>Log in</button>
+          </form>
+          {error && <p className="error">{error}</p>}
+        </div>
       </div>
     )
   }
 
+  const stock = (q) => (Number(q) === 0 ? 'out' : Number(q) <= 5 ? 'low' : 'ok')
+
   return (
-    <div className="card">
-      <header>
-        <h1>Products</h1>
-        <button className="ghost" onClick={logout}>Logout</button>
-      </header>
-      {error && <p className="error">{error}</p>}
+    <div className="page">
+      <div className="card">
+        <header>
+          <h1>Products<span className="count">{products.length}</span></h1>
+          <button className="ghost" onClick={logout}>Log out</button>
+        </header>
+        {error && <p className="error">{error}</p>}
 
-      <form className="row" onSubmit={save}>
-        <input placeholder="Product name" value={form.product_name} onChange={set('product_name')} required />
-        <input placeholder="Description" value={form.description} onChange={set('description')} />
-        <input type="number" step="0.01" placeholder="Price" value={form.price} onChange={set('price')} required />
-        <input type="number" placeholder="Qty" value={form.quantity} onChange={set('quantity')} required />
-        <button>{editId ? 'Update' : 'Add'}</button>
-        {editId && <button type="button" className="ghost"
-          onClick={() => { setEditId(null); setForm(emptyForm) }}>Cancel</button>}
-      </form>
+        <form className="row" onSubmit={save}>
+          <input placeholder="Product name" value={form.product_name} onChange={set('product_name')} required />
+          <input placeholder="Description" value={form.description} onChange={set('description')} />
+          <input type="number" step="0.01" placeholder="Price" value={form.price} onChange={set('price')} required />
+          <input type="number" placeholder="Qty" value={form.quantity} onChange={set('quantity')} required />
+          <button>{editId ? 'Save changes' : 'Add product'}</button>
+          {editId && <button type="button" className="ghost"
+            onClick={() => { setEditId(null); setForm(emptyForm) }}>Cancel</button>}
+        </form>
 
-      <table>
-        <thead><tr><th>Name</th><th>Description</th><th>Price</th><th>Qty</th><th></th></tr></thead>
-        <tbody>
-          {products.map((p) => (
-            <tr key={p.id}>
-              <td>{p.product_name}</td>
-              <td>{p.description}</td>
-              <td>₱{p.price}</td>
-              <td>{p.quantity}</td>
-              <td className="actions">
-                <button onClick={() => edit(p)}>Edit</button>
-                <button className="danger" onClick={() => remove(p.id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-          {!products.length && <tr><td colSpan="5">No products yet.</td></tr>}
-        </tbody>
-      </table>
+        <div className="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Description</th><th>Price</th><th>In stock</th><th></th></tr></thead>
+            <tbody>
+              {products.map((p) => (
+                <tr key={p.id}>
+                  <td>{p.product_name}</td>
+                  <td>{p.description}</td>
+                  <td>₱{p.price}</td>
+                  <td><span className={`pill ${stock(p.quantity)}`}>{p.quantity}</span></td>
+                  <td className="actions">
+                    <button onClick={() => edit(p)}>Edit</button>
+                    <button className="danger" onClick={() => remove(p.id)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+              {!products.length && <tr><td colSpan="5" className="empty">No products yet. Add your first one above.</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   )
 }
